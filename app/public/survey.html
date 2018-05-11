@@ -396,31 +396,33 @@
 
 	<script type="text/javascript">
 	
-		var config = {
-			'.chosen-select': {},
-			'.chosen-select-deselect': { allow_single_deselect: true },
-			'.chosen-select-no-single': { disable_search_threshold: 11 },
-			'.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
-			'.chosen-select-width': { width: "95%" }
-		}
-		for (var selector in config) {
-			$('.chosen-select').val('').trigger('chosen:updated');
-		}
-		// Capture the form inputs 
-		$("#submit").on("click", function () {
-			// Form validation
 			function validateForm() {
-				var isValid = true;
+					var data = {
+						valid: true,
+						userData: {
+							name: $("#name").val(),
+							photo: $("#photo").val(),
+							scores: []
+						}
+					};
+				
 				$('.form-control').each(function () {
 					if ($(this).val() === '')
-						isValid = false;
+						data.valid = false;
+						return data;
 				});
-				$('.chosen-select').each(function () {
-					if ($(this).val() === "")
-						isValid = false
-				})
-				return isValid;
-			}
+			  $.each(questions, function(qIndex, value) {
+        var radioValue = $("input[name='Q" + qIndex + "']:checked").val();
+        if (radioValue) { //any choice been selected 
+            data.userData.scores.push(parseInt(radioValue));
+        } else { //no choice been selected 
+            data.valid = false;
+            return data;
+        }
+    });
+
+    return data;
+}
 			// If all required fields are filled
 			if (validateForm() == true) {
 				// Create an object for the user's data
@@ -445,7 +447,20 @@
 				alert("Please fill out all fields before submitting!");
 			}
 
-			return false;
+			  $("#submit").on("click", function() {
+        var surveyResult = validateSurvey();
+
+        // If all required fields are filled
+        //display the best match
+        if (surveyResult.valid === true) {
+            // console.log(surveyResult.userData);
+            getTheBestMatch(surveyResult.userData);
+
+        } else {
+            alert("Please fill out all fields before submitting!");
+        }
+        return false;
+
 		});
 	</script>
 
