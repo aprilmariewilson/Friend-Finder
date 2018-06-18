@@ -349,7 +349,7 @@
 						</div>
 						<div class="radio">
 							<label>
-								<input type="radio" name="question10" id="optionsRadios3" value="3"> $100-$250 
+								<input type="radio" name="question10" id="optionsRadios3" value="3"> $100-$250
 							</label>
 						</div>
 						<div class="radio">
@@ -365,14 +365,14 @@
 					</div>
 					<!-- submit button -->
 					<div class="col-md-12">
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" id="submit" class="btn btn-primary">Submit</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 	<!-- put modal here -->
-	<div class="modal fade">
+	<div class="modal fade" id= "myModal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -380,6 +380,7 @@
 					<h4 class="modal-title">Your New Friend</h4>
 				</div>
 				<div class="modal-body">
+
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -388,12 +389,14 @@
 			</div>
 		</div>
 	</div>
+
 	<script>
-		$(window).on("load", function () {
-			$(".submit").on("click", function (event) {
+		$(document).ready(function () {
+			$("#submit").on("click", function (event) {
 				event.preventDefault();
+				//get values of choices
 				value = $("input[type='radio']:checked").val();
-				console.log('value: ', value);
+				//create new user
 				var newUser = {
 					"name": $("#name").val().trim(),
 					"photo": $("#photo").val().trim(),
@@ -410,17 +413,11 @@
 						$('input[name = question9]:checked').val()
 					]
 				};
-				console.log(newUser.scores);
-				console.log(newUser);
 				// get
 				$.post("/api/friends", newUser)
 					.then(function (results) {
-						// make some stuff	
+						console.log(results);
 						var Modal = new ModalBuild(results);
-						// update the html of bestModal
-						$(".modal-body").html(Modal)
-							// pop the modal
-							.modal('show');
 					});
 				// end of the function for clicking on submit button
 			});
@@ -441,11 +438,11 @@
 				.attr("href", "/survey")
 				.html(
 					$('<button>')
-					.text("Take the survey again")
+						.text("Take the survey again")
 				);
 			// make a div and append it with the image content and 
-			return $('<div>').append(matchName, matchImage, matchText, takeAgain)
-				.addClass("modal-content");
+			$('.modal-body').append(matchName, matchImage, matchText, takeAgain)
+			$("#myModal").modal()
 		}
 	</script>
 
